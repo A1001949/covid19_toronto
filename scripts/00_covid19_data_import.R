@@ -22,4 +22,4 @@ all_data <-
   opendatatoronto::get_resource()
 
 #### Save data ### 
-write_csv(all_data, "inputs/raw_data.csv")
+write_csv(all_data, "inputs/data/raw_data.csv")

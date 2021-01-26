@@ -1,90 +1,146 @@
 ---
-title: "TBD"
+title: "COVID19 Cases in Toronto"
 subtitle: "TBD"
-author: "TBD"
-thanks: "Code and data are available at: LINK."
+author: "Adrian Wong"
+thanks: "Code and data are available at: https://github.com/A1001949/covid19_toronto.git"
 date: "`r format(Sys.time(), '%d %B %Y')`"
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "Education is a contributor to many beneficial socio-economic outcomes. We intend to exam the education profile in the selected neighbourhoods of Toronto that have polarized household income from the data set package Wellbeing Toronto - Demographics: NHS Indicators. We first observe that the income gap between the neighbourhood with the highest household income and the lowest is enormous. The median household income of Bridle Path-Sunnybrook-York Mills is almost nine times more than Regent Park before tax. Bridle Path-Sunnybrook-York Mills also has a much higher attainment rate (45%) of higher education above a bachelor’s degree than Regent Park (23%) and the City of Toronto (27%). We intend to use the comparison to bring awareness of inequality in income and education existing in the City of Toronto."
 output:
   bookdown::pdf_document2:
 toc: FALSE
 bibliography: references.bib
+nocite: |
+  @*
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
-library(palmerpenguins)
+library(scales)
+library(knitr)
+library(kableExtra)
+
+total_area <- (800 * 7) / 2
+# Pre-requisites: 
+# - Need to have run 00_covid19_data_import.R
+# - Need to have run 00_covid19_data_cleaning.R
+
+# Read in the cleaned data. 
+clean_data <- readr::read_csv("../../inputs/data/clean_data.csv")
 ```
 
 # Introduction
-
-
-
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Donec elementum ligula eu sapien consequat eleifend. Donec nec dolor erat, condimentum sagittis sem. Praesent porttitor porttitor risus, dapibus rutrum ipsum gravida et. Integer lectus nisi, facilisis sit amet eleifend nec, pharetra ut augue. Integer quam nunc, consequat nec egestas ac, volutpat ac nisi. Sed consectetur dignissim dignissim. Donec pretium est sit amet ipsum fringilla feugiat. Aliquam erat volutpat. Maecenas scelerisque, orci sit amet cursus tincidunt, libero nisl eleifend tortor, vitae cursus risus mauris vitae nisi. Cras laoreet ultrices ligula eget
 
 # Data
+## Data Source
+The source of the data.
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Donec elementum ligula eu sapien consequat eleifend. Donec nec dolor erat, condimentum sagittis sem. Praesent porttitor porttitor risus, dapibus rutrum ipsum gravida et. Integer lectus nisi, facilisis sit amet eleifend nec, pharetra ut augue. Integer quam nunc, consequat nec egestas ac, volutpat ac nisi. Sed consectetur dignissim dignissim. Donec pretium est sit amet ipsum fringilla feugiat. Aliquam erat volutpat. Maecenas scelerisque, orci sit amet cursus tincidunt, libero nisl eleifend tortor, vitae cursus risus mauris vitae nisi. Cras laoreet ultrices ligula eget
 
-Our data is of penguins (Figure \@ref(fig:bills)).
+## Methodology
+The methodology and approach that is used to collect and process the data.
 
-```{r bills, fig.cap="Bills of penguins", echo = FALSE}
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = FALSE) +
+## Population
+The population, the frame, and the sample (as appropriate).
+Age and Gender counts where age in x axis, gender is new bars (Figure \@ref(fig:genderdist)).
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Donec elementum ligula eu sapien consequat eleifend.
+
+```{r genderdist, fig.width=10, fig.height=5, fig.cap="This is a temp figure", echo = FALSE}
+clean_data %>% 
+  drop_na(age_group) %>%  
+  ggplot(aes(x = age_group, fill = client_gender)) +
+  geom_bar() + 
+  labs(title = "Distribution of Age and Gender", x = "Age Group", y = "Count", fill = "Gender") +
+  scale_fill_brewer(palette = "Set1") +
   theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
   coord_flip()
 ```
 
-Talk more about it.
 
-Also bills and their average (Figure \@ref(fig:billssssss)). (Notice how you can change the height and width so they don't take the whole page?)
+## Response Sourcing
+Information about how respondents were found. What happened to non-response?
 
-```{r billssssss, fig.cap="More bills of penguins", echo = FALSE, fig.width=8, fig.height=4}
-# This needs to be about the random data tha tI sasmpled?
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = FALSE) +
+## Key Features
+What are its key features, strengths, and weaknesses about the survey generally.
+
+## Variables
+You should thoroughly discuss the variables in the dataset that you use. Are there any that are very similar that you nonetheless don’t use? Did you construct any variables by combining various ones? What do the data look like?
+Plot the actual data that you’re using (or as close as you can get to it).
+Discuss these plots and the other features of these data.
+
+Age (lines) and cases over time (x axis) (Figure \@ref(fig:time)).
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Donec elementum ligula eu sapien consequat eleifend.
+
+```{r time, fig.width=10, fig.height=5, fig.cap="This is a temp figure", echo = FALSE}
+clean_data %>% 
+  drop_na(age_group) %>%  
+  ggplot(aes(x=episode_date, color=age_group)) +
+  geom_line(stat="count") +
+  labs(title = "COVID19 Cases Across Age Groups Over Time", x = "Episode Date", y = "Count", color = "Age Group") +
+  theme_minimal()
+```
+
+
+Age(x) and resolved (two bars) counts (y) (Figure \@ref(fig:source)).
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Donec elementum ligula eu sapien consequat eleifend.
+
+```{r source, fig.width=10, fig.height=5, fig.cap="This is a temp figure", echo = FALSE}
+clean_data %>% 
+  drop_na(age_group) %>%  
+  ggplot(aes(x = age_group, fill = source_of_infection)) +
+  geom_bar(position="fill") + # Use position="fill" to use a factor of count instead of the count: https://stackoverflow.com/questions/24776200/ggplot-replace-count-with-percentage-in-geom-bar
+  scale_y_continuous(labels = percent) + # Change count from factor to percentages using scales::percent: https://stackoverflow.com/questions/27433798/how-can-i-change-the-y-axis-figures-into-percentages-in-a-barplot
+  scale_fill_brewer(palette = "Set1") +
+  labs(title = "Sources of Infection Based on Age Group", x = "Age Group", y = "Percentage of Population in Group", fill = "Source") +
   theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
   coord_flip()
 ```
 
-Talk way more about it. 
+Table outlining care (counts) given to different age groups (Table \@ref(tab:treatment)). Ignore current stats, cause ever includes current stats. 
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
 
+```{r treatment, echo = FALSE}
+clean_data %>% 
+  drop_na(age_group) %>%  
+  group_by(age_group) %>% 
+  summarise(hospitalized_percent = signif((sum(ever_hospitalized=="Yes", na.rm = T)/sum(classification=="CONFIRMED"))*100, 2),
+            icu_percent = signif((sum(ever_in_icu=="Yes", na.rm = T)/sum(classification=="CONFIRMED"))*100, 2),
+            intubated_percent = signif((sum(ever_intubated=="Yes", na.rm = T)/sum(classification=="CONFIRMED"))*100, 2),
+            total = sum(classification=="CONFIRMED")) %>%
+  kable(caption="Treatment per Age Group", 
+        col.names = c("Age Group", "Hospitalized (%)", "ICU (%)", "Intubated (%)", "Count per Group"), 
+        booktabs = T) %>%
+  kable_styling(latex_options = "striped") #from https://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf
+```
 
+Age(x) and resolved (two bars) counts (y) (Figure \@ref(fig:outcome)).
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Donec elementum ligula eu sapien consequat eleifend.
 
-# Model
-
-\begin{equation}
-Pr(\theta | y) = \frac{Pr(y | \theta) Pr(\theta)}{Pr(y)}  (\#eq:bayes)
-\end{equation}
-
-Equation \@ref(eq:bayes) seems useful, eh?
-
-Here's a dumb example of how to use some references: In paper we run our analysis in `R` [@citeR]. We also use the `tidyverse` which was written by @thereferencecanbewhatever If we were interested in baseball data then @citeLahman could be useful. 
-
-
-# Results
-
-# Discussion
-
-## First discussion point
-
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
-
-## Second discussion point
-
-## Third discussion point
-
-## Weaknesses and next steps
-
-Weaknesses and next steps should also be included.
+```{r outcome, fig.width=10, fig.height=5, fig.cap="This is a temp figure", echo = FALSE}
+clean_data %>% 
+  drop_na(age_group) %>%  
+  ggplot(aes(x = age_group, fill = outcome)) +
+  geom_bar(position="fill") + # Use position="fill" to use a factor of count instead of the count: https://stackoverflow.com/questions/24776200/ggplot-replace-count-with-percentage-in-geom-bar
+  labs(title = "Outcomes Based on Age Group", x = "Age Group", y = "Percentage of Population in Group", fill = "Outcome") +
+  scale_y_continuous(labels = percent) + # Change count from factor to percentages using scales::percent: https://stackoverflow.com/questions/27433798/how-can-i-change-the-y-axis-figures-into-percentages-in-a-barplot
+  scale_fill_brewer(palette = "Set1") +
+  theme_minimal() +
+  coord_flip()
+```
 
 \newpage
 
 # Appendix {-}
+Age(x) and location (Figure \@ref(fig:location)).
+
+```{r location, fig.width=20, fig.height=20, fig.cap="This is a temp figure", echo = FALSE}
+clean_data %>% 
+  drop_na(age_group) %>%  
+  ggplot(aes(x = age_group, y = neighbourhood_name, color=age_group)) +
+  geom_jitter(show.legend = FALSE) +
+  labs(title = "Age Groups per Neighbourhood", x = "Age Group", y = "Neighbourhood") +
+  theme_minimal()
+```
 
 \newpage
 
