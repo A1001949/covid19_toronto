@@ -34,6 +34,8 @@ clean_data <- read_csv("../../inputs/data/clean_data.csv")
 # Introduction
 In 2020, COVID-19 contributed to growing concerns about the health and safety of people nationwide but especially for those who had underlying health conditions and those who were among the elderly. This is because previous research has demonstrated that the elderly were more susceptible to transmission and infection [@citeagecovid]. Moreover, the World Health Organization has listed COVID-19 to be especially threatening for seniors due to age-related complications and changes in terms of physiology [@citewho]. As a result, data collected by Toronto Public Health and sourced from `opendatatoronto` was analyzed to develop a better understanding of the amount of treatment that elderly Torontonians get, as well as whether this treatment lead to less severe outcomes.
 
+This report is organized in two sections: the data overview and the data analysis. Within the data overview, the source of the data will be discussed, as well as the variables within the dataset and the methodology of analysis. Subsequently, the data analysis will explore the population within the dataset, the trends in cases over time along age groups, the sources of infections, how cases were treated, and the case outcomes.
+
 # Data Overview
 ## Source
 This dataset was collected by Toronto Public Health in order to better understand COVID-19 in the context of the community, as well as to help inform reactive measures in preventing fatal outcomes in new cases and outbreaks. Toronto Public Health (TPH) was established in 1883 and reports to the Board of Health, overlooking the health and well-being of 2.9 million Torontonians. Their mandate focuses on the preventing the spread of disease, using surveillance to monitor the health status of the population, and developing/implementing public policy and practices [@citetph]. 
@@ -154,8 +156,6 @@ clean_data %>%
   theme_minimal() +
   coord_flip()
 ```
-
-\newpage
 
 ## Treatment and Case Response
 As indicated by table \@ref(tab:treatment), seniors appear to receive more treatment for COVID19 than their younger counterparts. The age group with the highest percentage of hospitalization is those who are ages 80 to 89 years old (approximately 30%) and the age group with the highest percentage of intubation is those who are ages 70 to 79 years old (approximately 3.6%).
