@@ -1,10 +1,10 @@
 ---
-title: "COVID19 Cases in Toronto"
-subtitle: "TBD"
+title: "Senior Torontonians Receive More Treatment for COVID-19 yet Suffer More Fatal Outcomes"
+subtitle: "An analysis of age-related treatment and outcomes of COVID-19 cases in Toronto"
 author: "Adrian Wong"
 thanks: "Code and data are available at: https://github.com/A1001949/covid19_toronto.git"
 date: "`r format(Sys.time(), '%d %B %Y')`"
-abstract: "Education is a contributor to many beneficial socio-economic outcomes. We intend to exam the education profile in the selected neighbourhoods of Toronto that have polarized household income from the data set package Wellbeing Toronto - Demographics: NHS Indicators. We first observe that the income gap between the neighbourhood with the highest household income and the lowest is enormous. The median household income of Bridle Path-Sunnybrook-York Mills is almost nine times more than Regent Park before tax. Bridle Path-Sunnybrook-York Mills also has a much higher attainment rate (45%) of higher education above a bachelor’s degree than Regent Park (23%) and the City of Toronto (27%). We intend to use the comparison to bring awareness of inequality in income and education existing in the City of Toronto."
+abstract: "Age is often associated with health and well-being, especially in terms of transmission and infection. Within this paper, analysis of COVID-19 cases in Toronto was compared to various age groups to gauge treatment and outcomes. It was discovered that senior patients received more treatment in terms of hospitalization, admission to intensive care units, and intubation. However, senior Torontonians were among the highest age group to also see fatal outcomes. For example, 23% of cases with patients ages 90 and over received hospitalization, but 30% of these cases ended in fatality. By analyzing this data, results may help guide a more nuanced understanding of how COVID-19 treatment and outcomes differ by a factor of patients' age."
 output:
   bookdown::pdf_document2:
 toc: FALSE
@@ -14,80 +14,139 @@ nocite: |
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+# Load the required libraries
 library(tidyverse)
 library(scales)
 library(knitr)
 library(kableExtra)
 
-total_area <- (800 * 7) / 2
 # Pre-requisites: 
+# - clean_data.csv already exists in inputs/data
+# IF clean_data.csv doesn't exist
 # - Need to have run 00_covid19_data_import.R
 # - Need to have run 00_covid19_data_cleaning.R
 
 # Read in the cleaned data. 
-clean_data <- readr::read_csv("../../inputs/data/clean_data.csv")
+clean_data <- read_csv("../../inputs/data/clean_data.csv")
 ```
 
 # Introduction
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Donec elementum ligula eu sapien consequat eleifend. Donec nec dolor erat, condimentum sagittis sem. Praesent porttitor porttitor risus, dapibus rutrum ipsum gravida et. Integer lectus nisi, facilisis sit amet eleifend nec, pharetra ut augue. Integer quam nunc, consequat nec egestas ac, volutpat ac nisi. Sed consectetur dignissim dignissim. Donec pretium est sit amet ipsum fringilla feugiat. Aliquam erat volutpat. Maecenas scelerisque, orci sit amet cursus tincidunt, libero nisl eleifend tortor, vitae cursus risus mauris vitae nisi. Cras laoreet ultrices ligula eget
+In 2020, COVID-19 contributed to growing concerns about the health and safety of people nationwide but especially for those who had underlying health conditions and those who were among the elderly. This is because previous research has demonstrated that the elderly were more susceptible to transmission and infection [@citeagecovid]. Moreover, the World Health Organization has listed COVID-19 to be especially threatening for seniors due to age-related complications and changes in terms of physiology [@citewho]. As a result, data collected by Toronto Public Health and sourced from `opendatatoronto` was analyzed to develop a better understanding of the amount of treatment that elderly Torontonians get, as well as whether this treatment lead to less severe outcomes.
 
-# Data
-## Data Source
-The source of the data.
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Donec elementum ligula eu sapien consequat eleifend. Donec nec dolor erat, condimentum sagittis sem. Praesent porttitor porttitor risus, dapibus rutrum ipsum gravida et. Integer lectus nisi, facilisis sit amet eleifend nec, pharetra ut augue. Integer quam nunc, consequat nec egestas ac, volutpat ac nisi. Sed consectetur dignissim dignissim. Donec pretium est sit amet ipsum fringilla feugiat. Aliquam erat volutpat. Maecenas scelerisque, orci sit amet cursus tincidunt, libero nisl eleifend tortor, vitae cursus risus mauris vitae nisi. Cras laoreet ultrices ligula eget
+# Data Overview
+## Source
+This dataset was collected by Toronto Public Health in order to better understand COVID-19 in the context of the community, as well as to help inform reactive measures in preventing fatal outcomes in new cases and outbreaks. Toronto Public Health (TPH) was established in 1883 and reports to the Board of Health, overlooking the health and well-being of 2.9 million Torontonians. Their mandate focuses on the preventing the spread of disease, using surveillance to monitor the health status of the population, and developing/implementing public policy and practices [@citetph]. 
 
-## Methodology
-The methodology and approach that is used to collect and process the data.
+Rows from this dataset were collected from the provincial communicable disease reporting system (iPHIS), which is an information system that stores case information in regards to reportable communicable diseases in Ontario. Each public health unit is required to report individual cases within the system [@citeiphis]. This data is also combined with Toronto Public Health Coronavirus Rapid Entry System (CORES) after the iPHIS was deemed to be "outdated" and "not meeting the city's needs" [@citecores]. As is the case, a limitation in this dataset is that a non-response bias was not accounted for - outcomes represented from this package only indicate the case data for respondents who visited a public health unit. As a result, descriptive analysis of this data does not extend to **all** cases of COVID-19 in Toronto, only those cases that were reported to a public health unit since the first reported case in January 2020.
 
-## Population
-The population, the frame, and the sample (as appropriate).
-Age and Gender counts where age in x axis, gender is new bars (Figure \@ref(fig:genderdist)).
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Donec elementum ligula eu sapien consequat eleifend.
+As cases continue to be reported, the dataset is completely refreshed and overwritten by Wednesday of every week. As is the case, the results found in this paper is up to date as of January 31st, 2021 but the results of this analysis is subject to change as new cases are reported.
 
-```{r genderdist, fig.width=10, fig.height=5, fig.cap="This is a temp figure", echo = FALSE}
-clean_data %>% 
-  drop_na(age_group) %>%  
-  ggplot(aes(x = age_group, fill = client_gender)) +
-  geom_bar() + 
-  labs(title = "Distribution of Age and Gender", x = "Age Group", y = "Count", fill = "Gender") +
-  scale_fill_brewer(palette = "Set1") +
-  theme_minimal() +
-  coord_flip()
+```{r echo = FALSE}
+# Get the number of rows
+sample_size <- clean_data %>% 
+  nrow()
 ```
 
-
-## Response Sourcing
-Information about how respondents were found. What happened to non-response?
-
-## Key Features
-What are its key features, strengths, and weaknesses about the survey generally.
-
 ## Variables
-You should thoroughly discuss the variables in the dataset that you use. Are there any that are very similar that you nonetheless don’t use? Did you construct any variables by combining various ones? What do the data look like?
-Plot the actual data that you’re using (or as close as you can get to it).
-Discuss these plots and the other features of these data.
+Within this dataset, there were **`r sample_size`** responses and 18 of the following features:
 
-Age (lines) and cases over time (x axis) (Figure \@ref(fig:time)).
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Donec elementum ligula eu sapien consequat eleifend.
+* `_id` : Unique row identifier for Open Data database
+* `Assigned_ID` : A unique ID assigned to cases by Toronto Public Health
+* `Outbreak Associated` : Sporadic or Outbreak Associated case
+* `Age Group` : Age of case patient (9 groups in decades + unknown group)
+* `Neighbourhood Name` : 1 of the 140 geographic neighbourhoods in Toronto, based on the patient's FSA
+* `FSA` : Forward sortation area, based on the patient's home address
+* `Source of Infection` : Most likely source of infection (8 options)
+* `Classification` : Categorization of the case as CONFIRMED or PROBABLE 
+* `Episode Date` : Best estimate when the disease was acquired 
+* `Reported Date` : The date on which the case was reported to TPH 
+* `Client Gender` : The patient's self-reported gender 
+* `Outcome` : Patient case was Fatal, Resolved, or is currently Active
+* `Currently Hospitalized` : Cases that are currently admitted to the hospital 
+* `Currently in ICU` : Cases that are currently admitted to the intensive care unit 
+* `Currently Intubated` : Cases that are currently intubated related to their COVID-19 infection
+* `Ever Hospitalized` : Cases that are ever admitted to the hospital (includes currently hospitalized)
+* `Ever in ICU` : Cases that are ever admitted to the intensive care unit (includes currently ICU)
+* `Ever Intubated` : Cases that were ever intubated related to COVID-19 (includes currently intubated)
 
-```{r time, fig.width=10, fig.height=5, fig.cap="This is a temp figure", echo = FALSE}
+On top of these variables, TPH has cited evidence to suggest that social and economic factors can play a large role in calculating the risk of COVID-19 through decreased access to healthcare [@citesocialcovid]. As such, TPH has also collected data in regards to racial group, income, household size, and Indigenous identity since May 20, 2020. Though important, this data is not yet available for analysis, nor is it in the scope of this paper.
+
+## Methodology
+To analyze this dataset, `R` statistical programming language [@citeR] was used to import the respective dataset [@citedataset] from the Open Data Toronto Portal using the `opendatatoronto` package [@citeopendatatoronto]. For data manipulation, exploration, and visualization, the `tidyverse` package was used as well [@citetidyverse]. In particular, graphs were created using `ggplot2` [@citeggplot] and a table was constructed using `kable` (from the `knitr` package [@citeknitr]) and `kableExtra` [@citekableextra]. The `scales` package was used to convert raw numbers to percentages [@citescales]. Finally, `janitor` was used to clean the data [@citejanitor].
+
+Previous research has indicated that there are age-related differences in the outcomes of COVID-19, potentially due to the age-related differences in terms of transmission and infection. In particular, previous research has demonstrated that susceptibility to infection for individuals ages 20 years and younger are approximately half of that for individuals ages 20 years and older. Moreover, symptoms manifest in 21% of infections for those between 10 and 19 years old, whereas 69% of infections for those over 70 manifest symptoms [@citeagecovid]. As is the case, analysis in this report relied heavily on the `Age Group` feature within the dataset.
+
+Once the data was imported, an `R` script were used to clean the data. This was done by first formatting the column names such that capitalization and spaces were removed in favour of underscores. Next, rows where the `Classification` of the case was *PROBABLE* as opposed to *CONFIRMED* were dropped. This was done in order to verify that the analysis being preformed was on cases that were with regard to COVID-19 and not a similar infection. Finally, as this analysis focuses on age-related differences in COVID-19, rows where the age-group was unknown were dropped. 
+
+Identifying features were unrelated to the analysis and were not used (`_id`, `Assigned ID`). The `Outbreak Associated` feature was not utilized as well, since the `Source of Infection` column already indicates whether the case was caused by an outbreak. The `FSA` column was not used either, since the `Neighbourhood Name` data was a good representation for the geological spread of these cases. Instead of analyzing `Reported Date`, it was more fitting to base analysis on `Episode Date` as it was a estimation of when the patient first contracted the disease (there may be variability for when the patient decided to visit a public health unit). Finally, `Currently Hospitalized`, `Currently in ICU`, and `Currently Intubated` were dropped in favour of `Ever Hospitalized`, `Ever in ICU`, and `Ever Intubated` since the latter is inclusive of the former.
+
+# Data Analysis
+## Population
+A stacked bar graph was used to illustrate the distribution of gender per age group within this population (Figure \@ref(fig:genderdist)). This figure also illustrates that within this dataset, the largest age group was those who were 20 to 29 years old and the smallest age group was those who were 90 and older. However, it is important to note that we can not conclude the likelihood of catching COVID as associated to one's age group as the distribution of age in Toronto is beyond the scope of this dataset. In other words, there may be an over-representation of patients aged 20 to 29 years old within this dataset simply because there are more 20 to 29 year-olds residing in Toronto than there are residents who are 90 years and older.
+
+```{r genderdist, fig.width=10, fig.height=5, fig.pos="H", fig.cap="Most respondents within this sample are between the ages of 20 to 29 years old", echo = FALSE}
+# Plot the stacked bar graph for age and gender
 clean_data %>% 
-  drop_na(age_group) %>%  
-  ggplot(aes(x=episode_date, color=age_group)) +
-  geom_line(stat="count") +
+  ggplot(aes(x = age_group, fill = client_gender)) + # X-axis is age group, different colors for the gender
+  geom_bar() + # I choose geom_bar for frequency counts
+  labs(title = "Distribution of Age and Gender", x = "Age Group", y = "Count", fill = "Gender") + # Labels should be descriptive
+  scale_fill_brewer(palette = "Set1") + # Change the color so that it doesn't look too saturated
+  theme_minimal() + # Don't need the gray background, keep the style minimal
+  coord_flip() # Flip the x and y axis so that the bar is horizontal
+```
+
+```{r echo = FALSE}
+# Group the dataframe by age and gender
+age_gender <- clean_data %>%
+  group_by(client_gender, age_group) %>% 
+	summarize(n=n()) 
+
+# Count the number of seniors
+total_senior <- sum(age_gender$n[age_gender$age_group == "90 and older"])
+# Count the number of male seniors
+senior_males <- signif((sum(age_gender[age_gender$client_gender == "MALE" & age_gender$age_group == "90 and older", "n"])/total_senior)*100, 2)
+# Count the number of female seniors
+senior_females <- signif((sum(age_gender[age_gender$client_gender == "FEMALE" & age_gender$age_group == "90 and older", "n"])/total_senior)*100,2)
+# Count the number of transgender responses
+transgender_total <- sum(age_gender[age_gender$client_gender == "TRANSGENDER", "n"])
+```
+
+Additionally, it also appears to be an equal amount of females to males for respondents between 19 and 79 years old. However within the 80 to 89 and 90 and older age groups, there appears to be more female respondents than male respondents. For example, `r senior_females`% of respondents 90 and older are females while `r senior_males`% are males. Within all age groups, there appears to be a negligible amount of transgender respondents (n=`r transgender_total`). Furthermore, these respondents were distributed across 140 neighbourhoods in Toronto (a jitter plot was used to illustrate this neighbourhood data; see Figure \@ref(fig:location) in the Appendix for more details).
+
+## Cases over Time
+Spikes in COVID19 cases seem to vary by age groups across time. As illustrated in the line graph in figure \@ref(fig:time), there was a recent spike in COVID19 cases for respondents under the age of 59 years old in January 2021. Interestingly, the spike was much more moderate for respondents between the ages of 60 and 69, and almost non-existent for participants ages 70 and older. Instead, it appears that there were several spikes in cases between October and December of 2020 for respondents aged 90 and up.
+
+```{r time, fig.width=10, fig.height=5, fig.pos="H", fig.cap="COVID19 cases spiked for Torontonians under the age of 59 in January 2021", echo = FALSE}
+# Plot a figure that shows the cases over time per age group
+clean_data %>% 
+  ggplot(aes(x=episode_date, color=age_group)) + # X axis is time, different line colors for different age groups
+  geom_line(stat="count") + # Lines increase with frequency counts on the same days
   labs(title = "COVID19 Cases Across Age Groups Over Time", x = "Episode Date", y = "Count", color = "Age Group") +
   theme_minimal()
 ```
 
+```{r echo = FALSE}
+# Create a dataframe and group it based on the age and the source of infection
+age_source <- clean_data %>%
+  group_by(age_group, source_of_infection) %>% 
+	summarize(n=n())
 
-Age(x) and resolved (two bars) counts (y) (Figure \@ref(fig:source)).
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Donec elementum ligula eu sapien consequat eleifend.
+# Count the number of rows that are 19 and younger
+total_junior <- sum(age_source$n[age_source$age_group == "19 and younger"])
+# Count the percentage of seniors who were outbreak associated
+senior_source <- signif((sum(age_source[age_source$source_of_infection == "N/A - Outbreak associated" & age_source$age_group == "90 and older", "n"])/total_senior)*100, 2)
+# Count the percentage of juniors who were infected through close contact
+junior_source <- signif((sum(age_source[age_source$source_of_infection == "Close contact" & age_source$age_group == "19 and younger", "n"])/total_junior)*100,2)
+```
 
-```{r source, fig.width=10, fig.height=5, fig.cap="This is a temp figure", echo = FALSE}
+## Source of Infection
+If we look at the source of infection for each of these age groups, we also see that respondents who were 80 years and older tended to be exposed to COVID19 through non-sporadic, outbreak-associated means (see figure \@ref(fig:source)). On top of this, a higher percentage of respondents within this age range were exposed to COVID19 through institutional means compared to other age ranges. This may point to the many recorded outbreaks seen in retirement homes and other healthcare institutions [@citeoutbreaks]. This might help explain the volatility in COVID19 cases among those 90 and older in figure \@ref(fig:time) as cases resulting from outbreaks might be reported as comparable episode dates. In contrast, a large percentage of respondents who were younger than 70 years old tended to be exposed to COVID19 through close contact and through the community. In particular, `r senior_source`% of respondents 90 and up were exposed to COVID19 through outbreak-associated means and `r junior_source`% of respondents 19 and under were exposed to COVID19 through close contact instead.
+
+```{r source, fig.width=10, fig.height=5, fig.pos="H", fig.cap="Most COVID19 cases among those 90 and older came from outbreaks", echo = FALSE}
+# Plot a filled bar graph to visualize the percentages of sources of infection per age group
 clean_data %>% 
-  drop_na(age_group) %>%  
-  ggplot(aes(x = age_group, fill = source_of_infection)) +
+  ggplot(aes(x = age_group, fill = source_of_infection)) + 
   geom_bar(position="fill") + # Use position="fill" to use a factor of count instead of the count: https://stackoverflow.com/questions/24776200/ggplot-replace-count-with-percentage-in-geom-bar
   scale_y_continuous(labels = percent) + # Change count from factor to percentages using scales::percent: https://stackoverflow.com/questions/27433798/how-can-i-change-the-y-axis-figures-into-percentages-in-a-barplot
   scale_fill_brewer(palette = "Set1") +
@@ -96,29 +155,45 @@ clean_data %>%
   coord_flip()
 ```
 
-Table outlining care (counts) given to different age groups (Table \@ref(tab:treatment)). Ignore current stats, cause ever includes current stats. 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+\newpage
+
+## Treatment and Case Response
+As indicated by table \@ref(tab:treatment), seniors appear to receive more treatment for COVID19 than their younger counterparts. The age group with the highest percentage of hospitalization is those who are ages 80 to 89 years old (approximately 30%) and the age group with the highest percentage of intubation is those who are ages 70 to 79 years old (approximately 3.6%).
 
 ```{r treatment, echo = FALSE}
+# Create a table that indicates the percentage of treatment per age group
 clean_data %>% 
-  drop_na(age_group) %>%  
   group_by(age_group) %>% 
   summarise(hospitalized_percent = signif((sum(ever_hospitalized=="Yes", na.rm = T)/sum(classification=="CONFIRMED"))*100, 2),
             icu_percent = signif((sum(ever_in_icu=="Yes", na.rm = T)/sum(classification=="CONFIRMED"))*100, 2),
             intubated_percent = signif((sum(ever_intubated=="Yes", na.rm = T)/sum(classification=="CONFIRMED"))*100, 2),
             total = sum(classification=="CONFIRMED")) %>%
-  kable(caption="Treatment per Age Group", 
+  kable(caption="Senior Torontonians receive more treatment for COVID19", 
         col.names = c("Age Group", "Hospitalized (%)", "ICU (%)", "Intubated (%)", "Count per Group"), 
         booktabs = T) %>%
-  kable_styling(latex_options = "striped") #from https://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf
+  kable_styling(latex_options = c("striped", "hold_position")) #from https://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf
 ```
 
-Age(x) and resolved (two bars) counts (y) (Figure \@ref(fig:outcome)).
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Donec elementum ligula eu sapien consequat eleifend.
+```{r echo = FALSE}
+# Create a dataframe that groups the age group and their outcomes
+age_outcome <- clean_data %>%
+  group_by(age_group, outcome) %>% 
+	summarize(n=n())
 
-```{r outcome, fig.width=10, fig.height=5, fig.cap="This is a temp figure", echo = FALSE}
+# Count the number of fatal cases from 20 to 29 years old
+outcome_29 <- sum(age_outcome[age_outcome$outcome == "FATAL" & age_outcome$age_group == "20 to 29 Years", "n"])
+# Count the number of fatal cases from 19 and younger
+outcome_19 <- sum(age_outcome[age_outcome$outcome == "FATAL" & age_outcome$age_group == "19 and younger", "n"])
+# Count the percentage of fatal cases for seniors 90 and up
+senior_outcome <- signif((sum(age_outcome[age_outcome$outcome == "FATAL" & age_outcome$age_group == "90 and older", "n"])/total_senior)*100, 2)
+```
+
+## Case Outcomes
+One might assume that with a higher percentage of senior patients receiving treatment compared to younger patients, their outcomes would fare much better. Unfortunately, this does not seem to be the case. As shown in the stacked bar chart in figure \@ref(fig:outcome), participants who were older had more fatal cases of COVID19 than younger respondents. `r senior_outcome`% of respondents aged 90 and older had fatal cases of COVID19. This is contrast to the `r outcome_29` and `r outcome_19` fatal cases of COVID19 among respondents ages 20 to 29 and 19 & younger respectively.
+
+```{r outcome, fig.width=10, fig.height=5, fig.pos="H", fig.cap="Senior patients have significantly more fatal cases than young patients", echo = FALSE}
+# Plot a filled bar chart to compare the percentages per age group per outcome
 clean_data %>% 
-  drop_na(age_group) %>%  
   ggplot(aes(x = age_group, fill = outcome)) +
   geom_bar(position="fill") + # Use position="fill" to use a factor of count instead of the count: https://stackoverflow.com/questions/24776200/ggplot-replace-count-with-percentage-in-geom-bar
   labs(title = "Outcomes Based on Age Group", x = "Age Group", y = "Percentage of Population in Group", fill = "Outcome") +
@@ -128,14 +203,17 @@ clean_data %>%
   coord_flip()
 ```
 
+# Conclusion
+In conclusion, senior Torontonians receive more treatment than younger Torontonians, but still don't necessarily fare better in terms of outcomes. This mirrors previous research by the World Health Organization that indicated that older individuals are more susceptible to developing higher severity of the illness due to physiological changes as a result of aging and a declining immune system [@citewho]. It is important to note the connection between higher amounts of treatments and case outcomes are not yet known and can not be inferred from this analysis. We can not conclude whether increases in treatment were reactionary to the increasing severity of cases which finally lead to fatal outcomes, or whether treatment acted as a preventative but ineffective measure against the already high fatality rate of cases among the elderly. Moreover, a limitation of this dataset was that it also did not include data in regards to underlying health conditions. If old age correlates with significant underlying health conditions, this may explain the increased fatality rate of COVID-19 cases given other complications and implications of these conditions. Future studies may seek to understand the relationship of old age, treatment, case conditions, and underlying conditions in order to answer these questions and extend this analysis.
+
 \newpage
 
 # Appendix {-}
-Age(x) and location (Figure \@ref(fig:location)).
+Respondents were distributed across 140 of Toronto's neighbourhoods (Figure \@ref(fig:location)).
 
-```{r location, fig.width=20, fig.height=20, fig.cap="This is a temp figure", echo = FALSE}
+```{r location, fig.width=20, fig.height=20, fig.cap="Age groups were distributed relatively evenly across Toronto neighbourhoods", echo = FALSE}
+# Use a jitter plot to visualize the distribution of where respondents live
 clean_data %>% 
-  drop_na(age_group) %>%  
   ggplot(aes(x = age_group, y = neighbourhood_name, color=age_group)) +
   geom_jitter(show.legend = FALSE) +
   labs(title = "Age Groups per Neighbourhood", x = "Age Group", y = "Neighbourhood") +

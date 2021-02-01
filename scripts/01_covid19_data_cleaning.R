@@ -21,6 +21,7 @@ raw_data <- readr::read_csv("inputs/data/raw_data.csv")
 clean_data <- 
   raw_data %>% 
   janitor::clean_names() %>%
+  drop_na(age_group) %>% # We're interested in seeing data based on age so remove rows with NA age
   filter(classification == "CONFIRMED")
 
 # Remove raw data from global envir

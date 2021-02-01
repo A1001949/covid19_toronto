@@ -17,9 +17,11 @@ library(tidyverse)
 all_data <- 
   opendatatoronto::search_packages("COVID19 Cases") %>% # Search for packages related to covid cases
   opendatatoronto::list_package_resources() %>% 
-  filter(name == "COVID19 cases") %>% # This is the particular package we are interested in
+  filter(name == "COVID19 cases") %>% 
   select(id) %>% 
   opendatatoronto::get_resource()
 
 #### Save data ### 
+# Please note that by overwriting this csv file, the analysis covered in the markdown file may be different due to updated data.
+# This is because according to Open Data Toronto, this data is completely refreshed and overwritten on a weekly basis.
 write_csv(all_data, "inputs/data/raw_data.csv")
